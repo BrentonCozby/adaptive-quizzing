@@ -86,7 +86,7 @@ angular.module('QuizFrontEnd', ['ngRoute'])
         $scope.correctAnswerElement = getLabelsByValue($scope.correctAnswerValue)[0];
 
         if($scope.isAdaptive === "adaptive") {
-          if(textAnswer.value === $scope.correctAnswerValue) {
+          if(textAnswer.value.toLowerCase() === $scope.correctAnswerValue.toLowerCase()) {
             $scope.wrongTextAnswer = false;
             onCorrectAnswer();
           }
@@ -110,90 +110,90 @@ angular.module('QuizFrontEnd', ['ngRoute'])
             }
           }
         }
-
-        function getLabelsByValue(value) {
-            var lables = document.getElementsByTagName("label");
-            var results = [];
-            for(var i = 0; i < lables.length; i++) {
-              if(lables[i].textContent == value) results.push(lables[i]);
-            }
-            return results;
-        }
-
-        function showGradingMessage(messageType) {
-          messageType.classList.add('showMessage');
-          $timeout(function() {
-            messageType.classList.remove('showMessage');
-          }, 1200);
-        }
-
-        function loadNextQuestion() {
-          $scope.currentQuestion++;
-          // if End of quiz
-          if($scope.currentQuestion >= $scope.questions.length) {
-            onEndOfQuiz();
-            return false;
-          }
-
-          $scope.isAdaptive = $scope.questions[$scope.currentQuestion].questionType;
-          $scope.correctAnswerIndex = $scope.questions[$scope.currentQuestion].answerIndex;
-          $scope.correctAnswerValue = $scope.questions[$scope.currentQuestion].answerChoices[$scope.correctAnswerIndex];
-          textAnswer.value = "";
-
-          if($scope.isAdaptive === "adaptive") {
-            textAnswer.classList.remove('hide');
-            textAnswer.focus();
-            answersContainer.classList.add('hide');
-          }
-          else {
-            textAnswer.classList.add('hide');
-            answersContainer.classList.remove('hide');
-          }
-        }
-
-        function onCorrectAnswer() {
-          if($scope.wrongMC) {
-            $scope.wrongMC = false;
-            $scope.points = "0";
-          }
-          else if($scope.wrongTextAnswer){
-            $scope.correct += 0.5;
-            $scope.points = "0.5";
-            $scope.wrongTextAnswer = false;
-          }
-          else {
-            $scope.correct += 1;
-            $scope.points = "1";
-          }
-
-          showGradingMessage(correctMessage);
-          $timeout(loadNextQuestion, 1000);
-        }
-
-        function onWrongTextAnswer() {
-          showGradingMessage(wrongMessage);
-          $timeout(function() {
-            answersContainer.classList.remove('hide');
-            textAnswer.classList.add('hide');
-          }, 1000);
-        }
-
-        function onWrongMCAnswer() {
-          $scope.correctAnswerElement.classList.add('correctAnswer');
-          $scope.wrongMC = true;
-          showGradingMessage(wrongMessage);
-        }
-
-        function onEndOfQuiz() {
-          console.log('end of quiz');
-          $scope.grade = `${$scope.correct} / ${$scope.questions.length}`;
-          $scope.gradePercent = (Math.round($scope.correct / $scope.questions.length * 100)).toFixed(1);
-          resultsContainer.style.display = 'block';
-          checkAnswerButton.classList.add('hide');
-          textAnswer.classList.add('hide');
-        }
         //check the ng-model corresponding to the angular radio group
         //against $scope.questions[$scope.currentQuestion].answerChoices[$scope.questions[$scope.currentQuestion].answerIndex]
       };
+
+      function getLabelsByValue(value) {
+          var lables = document.getElementsByTagName("label");
+          var results = [];
+          for(var i = 0; i < lables.length; i++) {
+            if(lables[i].textContent == value) results.push(lables[i]);
+          }
+          return results;
+      }
+
+      function showGradingMessage(messageType) {
+        messageType.classList.add('showMessage');
+        $timeout(function() {
+          messageType.classList.remove('showMessage');
+        }, 1200);
+      }
+
+      function loadNextQuestion() {
+        $scope.currentQuestion++;
+        // if End of quiz
+        if($scope.currentQuestion >= $scope.questions.length) {
+          onEndOfQuiz();
+          return false;
+        }
+
+        $scope.isAdaptive = $scope.questions[$scope.currentQuestion].questionType;
+        $scope.correctAnswerIndex = $scope.questions[$scope.currentQuestion].answerIndex;
+        $scope.correctAnswerValue = $scope.questions[$scope.currentQuestion].answerChoices[$scope.correctAnswerIndex];
+        textAnswer.value = "";
+
+        if($scope.isAdaptive === "adaptive") {
+          textAnswer.classList.remove('hide');
+          textAnswer.focus();
+          answersContainer.classList.add('hide');
+        }
+        else {
+          textAnswer.classList.add('hide');
+          answersContainer.classList.remove('hide');
+        }
+      }
+
+      function onCorrectAnswer() {
+        if($scope.wrongMC) {
+          $scope.wrongMC = false;
+          $scope.points = "0";
+        }
+        else if($scope.wrongTextAnswer){
+          $scope.correct += 0.5;
+          $scope.points = "0.5";
+          $scope.wrongTextAnswer = false;
+        }
+        else {
+          $scope.correct += 1;
+          $scope.points = "1";
+        }
+
+        showGradingMessage(correctMessage);
+        $timeout(loadNextQuestion, 1000);
+      }
+
+      function onWrongTextAnswer() {
+        showGradingMessage(wrongMessage);
+        $timeout(function() {
+          answersContainer.classList.remove('hide');
+          textAnswer.classList.add('hide');
+        }, 1000);
+      }
+
+      function onWrongMCAnswer() {
+        $scope.correctAnswerElement.classList.add('correctAnswer');
+        $scope.wrongMC = true;
+        showGradingMessage(wrongMessage);
+      }
+
+      function onEndOfQuiz() {
+        console.log('end of quiz');
+        $scope.grade = `${$scope.correct} / ${$scope.questions.length}`;
+        $scope.gradePercent = (Math.round($scope.correct / $scope.questions.length * 100)).toFixed(1);
+        resultsContainer.style.display = 'block';
+        checkAnswerButton.classList.add('hide');
+        textAnswer.classList.add('hide');
+      }
     }
   ]);
