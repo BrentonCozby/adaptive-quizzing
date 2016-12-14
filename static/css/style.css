@@ -112,3 +112,11 @@
   display: inline-block;
   width: 70px;
 }
+
+#resultsContainer h2 {
+  margin-top: 60px;
+}
+
+.missedQuestion {
+  margin: 35px 0;
+}

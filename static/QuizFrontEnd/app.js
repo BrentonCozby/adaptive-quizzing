@@ -104,7 +104,7 @@ angular.module('QuizFrontEnd', ['ngRoute'])
                 onCorrectAnswer();
               }
               else {
-                onWrongMCAnswer();
+                onWrongMCAnswer($scope.questions[$scope.currentQuestion].questionText, $scope.questions[$scope.currentQuestion].answerChoices[$scope.correctAnswerIndex]);
               }
               break;
             }
@@ -181,10 +181,19 @@ angular.module('QuizFrontEnd', ['ngRoute'])
         }, 1000);
       }
 
-      function onWrongMCAnswer() {
+      function onWrongMCAnswer(missedQuestionText, missedAnswerText) {
         $scope.correctAnswerElement.classList.add('correctAnswer');
         $scope.wrongMC = true;
         showGradingMessage(wrongMessage);
+        var question = document.createElement('h3');
+        question.appendChild( document.createTextNode(missedQuestionText) );
+        var answer = document.createElement('p');
+        answer.appendChild( document.createTextNode(missedAnswerText) );
+        var missedQuestion = document.createElement('div');
+        missedQuestion.appendChild(question);
+        missedQuestion.appendChild(answer);
+        missedQuestion.classList.add('missedQuestion');
+        resultsContainer.appendChild(missedQuestion);
       }
 
       function onEndOfQuiz() {
