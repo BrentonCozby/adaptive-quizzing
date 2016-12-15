@@ -31,10 +31,19 @@ angular.module('QuizFrontEnd', ['ngRoute'])
       topicsService.getTopics().then(res=>{
         $scope.topics=res.data;
       });
+      $scope.validateTopic = false;
+      $scope.validateNumQuestions = false;
       $scope.startQuiz = function() {
-        // grab selected topic
-        // get number of questions (user-inputted)
-        // redirect page to #/run-quiz/:topic/:number
+        $scope.validateTopic = false;
+        $scope.validateNumQuestions = false;
+        if(!$scope.selectedTopic) {
+          $scope.validateTopic = true;
+          return false;
+        }
+        if(!$scope.numOfQuestions) {
+          $scope.validateNumQuestions = true;
+          return false;
+        }
         $window.location.href = `#/run-quiz/${$scope.selectedTopic}/${$scope.numOfQuestions}`;
       };
 
@@ -56,6 +65,7 @@ angular.module('QuizFrontEnd', ['ngRoute'])
       $scope.wrongMC = false;
       $scope.wrongTextAnswer = false;
       $scope.validateTextAnswer = false;
+      $scope.selectCorrectAnswer = false;
 
       questionsService.getQuestions(topic, number)
       .then(res=>{
@@ -77,11 +87,12 @@ angular.module('QuizFrontEnd', ['ngRoute'])
       });
 
       $scope.checkAnswer = function(){
+        $scope.validateTextAnswer = false;
+        $scope.selectCorrectAnswer = false;
         if(textAnswer.value === "" && $scope.isAdaptive === "adaptive") {
           $scope.validateTextAnswer = true;
           return;
         }
-        else $scope.validateTextAnswer = false;
 
         $scope.correctAnswerElement = getLabelsByValue($scope.correctAnswerValue)[0];
 
@@ -89,25 +100,24 @@ angular.module('QuizFrontEnd', ['ngRoute'])
           if(textAnswer.value.toLowerCase() === $scope.correctAnswerValue.toLowerCase()) {
             $scope.wrongTextAnswer = false;
             onCorrectAnswer();
+            return false;
           }
-          else {
-            onWrongTextAnswer();
-            $scope.isAdaptive = 'mc';
-            $scope.wrongTextAnswer = true;
-          }
+
+          onWrongTextAnswer();
+          $scope.isAdaptive = 'mc';
+          $scope.wrongTextAnswer = true;
+          return false;
         }
-        else {
-          let answers = document.getElementsByName('answerChoices');
-          for (let i = 0, length = answers.length; i < length; i++) {
-            if (answers[i].checked) {
-              if(answers[i].value == $scope.correctAnswerValue) {
-                onCorrectAnswer();
-              }
-              else {
-                onWrongMCAnswer($scope.questions[$scope.currentQuestion].questionText, $scope.questions[$scope.currentQuestion].answerChoices[$scope.correctAnswerIndex]);
-              }
+
+        let answers = document.getElementsByName('answerChoices');
+        for (let i = 0, length = answers.length; i < length; i++) {
+          if (answers[i].checked) {
+            if(answers[i].value == $scope.correctAnswerValue) {
+              onCorrectAnswer();
               break;
             }
+            onWrongMCAnswer($scope.questions[$scope.currentQuestion].questionText, $scope.questions[$scope.currentQuestion].answerChoices[$scope.correctAnswerIndex]);
+            break;
           }
         }
         //check the ng-model corresponding to the angular radio group
@@ -147,11 +157,12 @@ angular.module('QuizFrontEnd', ['ngRoute'])
           textAnswer.classList.remove('hide');
           textAnswer.focus();
           answersContainer.classList.add('hide');
+          return false;
         }
-        else {
-          textAnswer.classList.add('hide');
-          answersContainer.classList.remove('hide');
-        }
+        
+        textAnswer.classList.add('hide');
+        answersContainer.classList.remove('hide');
+        return false;
       }
 
       function onCorrectAnswer() {
@@ -182,6 +193,7 @@ angular.module('QuizFrontEnd', ['ngRoute'])
       }
 
       function onWrongMCAnswer(missedQuestionText, missedAnswerText) {
+        if($scope.wrongMC === true) $scope.selectCorrectAnswer = true;
         $scope.correctAnswerElement.classList.add('correctAnswer');
         $scope.wrongMC = true;
         showGradingMessage(wrongMessage);
