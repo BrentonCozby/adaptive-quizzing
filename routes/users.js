@@ -26,7 +26,15 @@ module.exports = function(app, User){
       res.end(err.toString());
     });
   });
-  
+
+  app.get('/api/users/student', function(req, res){
+    User.findOne({ 'username' : 'vmoreno'})
+    .then(user=>{
+      prepSession(req, user);
+      res.redirect('/quiz');
+    });
+  });
+
   app.post('/api/users/register', function(req,res){
     User.find({'username': req.body.username})
     .then(user=>{
@@ -47,10 +55,10 @@ module.exports = function(app, User){
     })
     .catch(err=>{
       console.log('error in api/users/register route ', err.toString());
-      res.end(err.toString());  
+      res.end(err.toString());
     });
   });
-  
+
   app.get('/logout', function(req,res){
     req.session.isAuthenticated = false;
     delete req.session.username;
@@ -62,4 +70,5 @@ function prepSession(req, user){
   req.session.isAuthenticated = true;
   req.session.username = user.username;
   req.session.uid = user._id;
+  console.log(req.session.username);
 }
