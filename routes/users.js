@@ -50,7 +50,7 @@ module.exports = function(app, User){
           prepSession(req, u);
           res.redirect('/');
         })
-        .catch(err=>{res.end('error: '+err.toString())})
+        .catch(err=>{res.end('error: '+err.toString())});
       }
     })
     .catch(err=>{
@@ -64,7 +64,7 @@ module.exports = function(app, User){
     delete req.session.username;
     res.redirect('/login.html');
   });
-}
+};
 
 function prepSession(req, user){
   req.session.isAuthenticated = true;
