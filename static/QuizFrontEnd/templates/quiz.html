@@ -12,5 +12,6 @@
     <input ng-model="numOfQuestions" type="number" class="form-control" placeholder="0">
   </div>
 </div>
-
-<button class="btn btn-primary" ng-click="startQuiz()">Start Quiz!</button>
+<p ng-show="validateTopic" style="color: red; margin-top: 15px;">Please Select a Topic</p>
+<p ng-show="validateNumQuestions" style="color: red; margin-top: 15px;">Please Enter a Number of Questions</p>
+<button class="btn btn-primary" ng-click="startQuiz()" style="margin-top: 15px">Start Quiz!</button>

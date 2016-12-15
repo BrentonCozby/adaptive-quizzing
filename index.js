@@ -69,6 +69,7 @@ require('./routes/quiz.js')(app, Question);
 
 function shouldNotAuth(req){
   const openPaths = ['/api/users/login',
+                     '/api/users/student',
                      '/api/users/register',
                      '/quiz',
                      'logout'];

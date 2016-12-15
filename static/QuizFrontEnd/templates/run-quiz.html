@@ -8,13 +8,14 @@
   <h3>{{questions[currentQuestion].questionText}}</h3>
   <form ng-submit="checkAnswer()">
     <input type="text" id="textAnswer" class="textAnswer form-control hide" ng-model="textAnswer" placeholder="Type your answer...">
-    <div class="validateTextAnswer" ng-show="validateTextAnswer">Please enter an answer</div>
+    <p class="validateTextAnswer" ng-show="validateTextAnswer">Please enter an answer</p>
     <div id="answersContainer">
       <div class="form-check answerChoiceContainer" ng-repeat="answerChoice in questions[currentQuestion].answerChoices">
         <input id="{{answerChoice}}" name="answerChoices" type="radio" value="{{answerChoice}}"></input>
         <label class="form-check-label form-control" for="{{answerChoice}}">{{answerChoice}}</label>
       </div>
     </div>
+    <p class="selectCorrectAnswer" ng-show="selectCorrectAnswer" style="color: red">Please Select the Correct Answer (the green one)</p>
     <button id="checkAnswer" class="btn btn-primary" type="submit">Check Answer</button>
   </form>
 </div>
