@@ -88,7 +88,6 @@ angular.module('QuizFrontEnd', ['ngRoute'])
 
       $scope.checkAnswer = function(){
         $scope.validateTextAnswer = false;
-        $scope.selectCorrectAnswer = false;
         if(textAnswer.value === "" && $scope.isAdaptive === "adaptive") {
           $scope.validateTextAnswer = true;
           return;
@@ -159,7 +158,7 @@ angular.module('QuizFrontEnd', ['ngRoute'])
           answersContainer.classList.add('hide');
           return false;
         }
-        
+
         textAnswer.classList.add('hide');
         answersContainer.classList.remove('hide');
         return false;
@@ -180,6 +179,7 @@ angular.module('QuizFrontEnd', ['ngRoute'])
           $scope.points = "1";
         }
 
+        $scope.selectCorrectAnswer = false;
         showGradingMessage(correctMessage);
         $timeout(loadNextQuestion, 1000);
       }
@@ -194,9 +194,11 @@ angular.module('QuizFrontEnd', ['ngRoute'])
 
       function onWrongMCAnswer(missedQuestionText, missedAnswerText) {
         if($scope.wrongMC === true) $scope.selectCorrectAnswer = true;
+        else $scope.selectCorrectAnswer = false;
         $scope.correctAnswerElement.classList.add('correctAnswer');
         $scope.wrongMC = true;
         showGradingMessage(wrongMessage);
+        if($scope.selectCorrectAnswer === true) return false;
         var question = document.createElement('h3');
         question.appendChild( document.createTextNode(missedQuestionText) );
         var answer = document.createElement('p');
